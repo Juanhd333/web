@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>ciclope</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .arriba {
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            flex: 1;
+        }
+        .abajo {
+            background: #800080;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="arriba"></div>
+    <div class="abajo"></div>
+    <img src="ciclope.png" alt="Cíclope" style="height: 300px; object-fit:contain; position:absolute; left:0; top:0;">
+    <style>
+        .contenedor-ciclope {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            z-index: 1;
+            width: 100%;
+            pointer-events: none;
+        }
+        .contenedor-ciclope img {
+            height: 300px;
+            object-fit: contain;
+            pointer-events: auto;
+        }
+        .titulo-ciclope {
+            color: white;
+            font-size: 4rem;
+            font-family: Arial, sans-serif;
+            margin-left: 30px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            text-shadow: 2px 2px 8px #000;
+        }
+        .habito-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            font-size: 1.5rem;
+            margin: 20px;
+            background: rgba(0,0,0,0.2);
+            padding: 12px 24px;
+            border-radius: 10px;
+            min-width: 200px;
+            max-width: 400px;
+            transition: background 0.3s;
+        }
+        .habito-delete-btn {
+            margin-left: 16px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+        .habito-strike-btn {
+            margin-right: 16px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+        .habito-striked span {
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s;
+            color: #bbb;
+        }
+        .habito-striked span::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 3px;
+            background: #fff;
+            border-radius: 2px;
+            transform: scaleX(0);
+            animation: strike 0.4s forwards;
+        }
+        @keyframes strike {
+            to {
+                transform: scaleX(1);
+            }
+        }
+    </style>
+    <div class="contenedor-ciclope">
+        <img src="ciclope.png" alt="Cíclope">
+        <div>
+            <span class="titulo-ciclope">CICLOPE</span>
+            <div style="margin-top: 16px;">
+                <div style="color:white; font-size:1.1rem; margin-bottom:4px;">Experiencia</div>
+                <div id="barra-exp-outer" style="background:#444; border-radius:8px; width:300px; height:18px; overflow:hidden;">
+                    <div id="barra-exp" style="background:white; width:0px; height:100%; transition:width 0.3s;"></div>
+                </div>
+                <div style="color:white; font-size:1.1rem; margin:10px 0 4px 0;">Hambre</div>
+                <div id="barra-hambre-outer" style="background:#444; border-radius:8px; width:300px; height:18px; overflow:hidden;">
+                    <div id="barra-hambre" style="background:white; width:0px; height:100%; transition:width 0.3s;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="editable-btn" style="position:absolute; top:30px; right:30px; font-size:2rem; width:48px; height:48px; border-radius:50%; border:none; background:#fff; color:#800080; font-weight:bold; box-shadow:0 2px 8px rgba(0,0,0,0.2); cursor:pointer;">+</button>
+    <script>
+    // Utilidades para modificar el ancho de las barras
+    function ajustarBarra(id, px) {
+        const barra = document.getElementById(id);
+        const outer = barra.parentElement;
+        // Obtener ancho actual en px
+        let widthActual = barra.style.width;
+        let outerWidth = outer.offsetWidth;
+        let widthPx = 0;
+        if (widthActual.endsWith('%')) {
+            widthPx = parseFloat(widthActual) / 100 * outerWidth;
+        } else if (widthActual.endsWith('px')) {
+            widthPx = parseFloat(widthActual);
+        } else {
+            widthPx = 0;
+        }
+        // Sumar px, pero no pasar el ancho del contenedor ni bajar de 0
+        let nuevoPx = Math.min(widthPx + px, outerWidth);
+        nuevoPx = Math.max(nuevoPx, 0);
+        barra.style.width = (nuevoPx / outerWidth * 100) + '%';
+    }
+
+    const btn = document.getElementById('editable-btn');
+    btn.addEventListener('click', function() {
+        if (!btn.isContentEditable) {
+            btn.contentEditable = "true";
+            btn.focus();
+        }
+        // Mostrar un prompt para crear un hábito
+        const habito = prompt("Crea un hábito:");
+        if (habito && habito.trim() !== "") {
+            // Crear un elemento para mostrar el hábito en la parte morada
+            const abajoDiv = document.querySelector('.abajo');
+            const habitoDiv = document.createElement('div');
+            habitoDiv.className = 'habito-item';
+
+            // Botón tachar a la izquierda
+            const strikeBtn = document.createElement('button');
+            strikeBtn.innerHTML = '✔️';
+            strikeBtn.className = 'habito-strike-btn';
+            strikeBtn.title = 'Tachar hábito';
+
+            // Texto del hábito
+            const habitoText = document.createElement('span');
+            habitoText.textContent = habito;
+
+            // Botón eliminar
+            const deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = '🗑️';
+            deleteBtn.className = 'habito-delete-btn';
+            deleteBtn.title = 'Eliminar hábito';
+
+            // Evento tachar
+            strikeBtn.addEventListener('click', function() {
+                if (!habitoDiv.classList.contains('habito-striked')) {
+                    habitoDiv.classList.add('habito-striked');
+                    ajustarBarra('barra-exp', 10);
+                    ajustarBarra('barra-hambre', 10);
+                } else {
+                    habitoDiv.classList.remove('habito-striked');
+                    ajustarBarra('barra-exp', -10);
+                    ajustarBarra('barra-hambre', -10);
+                }
+            });
+
+            // Evento eliminar
+            deleteBtn.addEventListener('click', function() {
+                habitoDiv.remove();
+            });
+
+            habitoDiv.appendChild(strikeBtn);
+            habitoDiv.appendChild(habitoText);
+            habitoDiv.appendChild(deleteBtn);
+            abajoDiv.appendChild(habitoDiv);
+        }
+    });
+    btn.addEventListener('blur', function() {
+        btn.contentEditable = "false";
+    });
+    </script>
+</body>
+</html>

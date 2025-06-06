@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elige un País</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-top: 20px;
+        }
+
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+            gap: 50px;
+        }
+
+        .icon-wrapper {
+            text-align: center;
+        }
+
+        .icon {
+            width: 300px;
+            height: 300px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px white;
+        }
+
+        .icon-label {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Elige un País</h1>
+     <a href="person_grecia.html" >
+    <div class="icon-container">
+        <div class="icon-wrapper">
+                <img src="grecia.png" alt="GRECIA" class="icon">
+            </a>
+    
+            <div class="icon-label">Grecia</div>
+        </div>
+ <a href="person_china.html" >
+        <div class="icon-wrapper">
+            <img src="china.png" alt="CHINA" class="icon">
+             
+
+                <span style="display:none;">Ir a china</span>
+      </a>
+            <div class="icon-label">China</div>
+            
+        </div>
+ <a href="person_noruega.html" >
+        <div class="icon-wrapper">
+            <img src="noruega.png" alt="NORUEGA" class="icon">
+                
+            
+            <span style="display:none;">Ir a Noruega</span>
+ </a>
+            <div class="icon-label">Noruega</div>
+        </div>
+ <a href ="person_japon.html">
+        <div class="icon-wrapper">
+            <img src="japon.png" alt="JAPON" class="icon">
+            <span style="display:none;">Ir a Japon</span>
+</a>
+            <div class="icon-label">Japón</div>
+        </div>
+    </div>
+</body>
+</html>
